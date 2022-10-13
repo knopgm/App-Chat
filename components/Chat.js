@@ -9,7 +9,12 @@ export default class Screen2 extends React.Component {
 
   render() {
     return (
-      <View style={styles.chatContainer}>
+      <View
+        style={[
+          styles.chatContainer,
+          { backgroundColor: this.props.route.params.backgroundColor },
+        ]}
+      >
         <Text>Hello Chat Screen!</Text>
       </View>
     );
