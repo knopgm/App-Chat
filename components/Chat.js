@@ -15,7 +15,7 @@ export default class Screen2 extends React.Component {
           { backgroundColor: this.props.route.params.backgroundColor },
         ]}
       >
-        <Text>Hello Chat Screen!</Text>
+        <Text style={styles.chatText}>Hello Chat Screen!</Text>
       </View>
     );
   }
@@ -27,5 +27,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     // backgroundColor: "color",
+  },
+  chatText: {
+    color: "white",
   },
 });
