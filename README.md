@@ -4,4 +4,8 @@ This App provide users with a chat interface and option to share images and thei
 
 ####:pushpin: Project dependencies
 
-The project was entirely build using **React Native** framework, which is a technologie readable in Android and iOS apps with one code base.
+The project was build using **React Native** framework, which is a technologie readable in Android and iOS apps with one code base.
+
+Another highlights:
+
+- Gifted Chat (UI library)

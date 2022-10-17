@@ -28,7 +28,6 @@ export default class Screen1 extends React.Component {
 
   render() {
     const { currentColor } = this.state;
-    console.log(currentColor);
 
     return (
       <View style={[styles.container]}>
