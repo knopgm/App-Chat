@@ -16,6 +16,7 @@ export default class Screen2 extends React.Component {
 
     this.setState({
       messages: [
+        //messages from others to the user
         {
           _id: 1,
           text: "Hello developer",
@@ -26,9 +27,10 @@ export default class Screen2 extends React.Component {
             avatar: "https://placeimg.com/140/140/any",
           },
         },
+        //messages from the system (who enters the room, etc.)
         {
           _id: 2,
-          text: "This is a system message",
+          text: "You entered the chat",
           createdAt: new Date(),
           system: true,
         },
@@ -36,17 +38,20 @@ export default class Screen2 extends React.Component {
     });
   }
 
+  //function to append new messages to the messages states array.
   onSend(messages = []) {
     this.setState((previousState) => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }));
   }
 
+  //function to style the bubble messages
   renderBubble(props) {
     return (
       <Bubble
         {...props}
         wrapperStyle={{
+          //bubbles at the right side of the screen (use left for left side)
           right: {
             backgroundColor: "#000",
           },
@@ -57,7 +62,12 @@ export default class Screen2 extends React.Component {
 
   render() {
     return (
-      <View style={[styles.chatContainer]}>
+      <View
+        style={{
+          backgroundColor: this.props.route.params.color,
+          flex: 1,
+        }}
+      >
         <GiftedChat
           renderBubble={this.renderBubble.bind(this)}
           messages={this.state.messages}

@@ -56,6 +56,10 @@ export default class Screen1 extends React.Component {
                   horizontal={true}
                   renderItem={({ item: color }) => (
                     <TouchableOpacity
+                      accessible={true}
+                      accessibilityLabel="Color options"
+                      accessibilityHint="Choose a background color."
+                      accessibilityRole="menu"
                       onPress={() => this.setState({ currentColor: color })}
                     >
                       <View
