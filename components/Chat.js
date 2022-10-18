@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Platform, KeyboardAvoidingView, StyleSheet } from "react-native";
-import { Bubble, GiftedChat } from "react-native-gifted-chat";
+import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 
 export default class Screen2 extends React.Component {
   constructor(props) {
@@ -64,7 +64,7 @@ export default class Screen2 extends React.Component {
     return (
       <View
         style={{
-          backgroundColor: this.props.route.params.color,
+          backgroundColor: this.props.route.params.backgroundColor,
           flex: 1,
         }}
       >
