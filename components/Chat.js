@@ -2,12 +2,29 @@ import React from "react";
 import { View, Platform, KeyboardAvoidingView, StyleSheet } from "react-native";
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 
+const firebase = require("firebase");
+require("firebase/firestore");
+
 export default class Screen2 extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       messages: [],
     };
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAVR56ZAQenGXN15aKEruNiSQ0nl-6FIlA",
+      authDomain: "app-chat-a76de.firebaseapp.com",
+      projectId: "app-chat-a76de",
+      storageBucket: "app-chat-a76de.appspot.com",
+      messagingSenderId: "154388903012",
+      appId: "1:154388903012:web:82c1885e0fded1723c9b71",
+      measurementId: "G-19N9H84QY9",
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
   }
 
   componentDidMount() {
@@ -36,6 +53,9 @@ export default class Screen2 extends React.Component {
         },
       ],
     });
+
+    // create a reference to your “messages” collection
+    this.referenceChatMessages = firebase.firestore().collection("messages");
   }
 
   //function to append new messages to the messages states array.
