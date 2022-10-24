@@ -22,7 +22,7 @@ export default class Screen1 extends React.Component {
       //save user's name
       name: "",
       //save user's choosed color
-      currentColor: colors[3],
+      currentColor: colors[1],
     };
   }
 

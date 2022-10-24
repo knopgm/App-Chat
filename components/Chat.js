@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Platform, KeyboardAvoidingView, StyleSheet } from "react-native";
+import {
+  View,
+  Platform,
+  KeyboardAvoidingView,
+  FlatList,
+  StyleSheet,
+} from "react-native";
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 
 const firebase = require("firebase");
@@ -56,6 +62,47 @@ export default class Screen2 extends React.Component {
 
     // create a reference to your “messages” collection
     this.referenceChatMessages = firebase.firestore().collection("messages");
+
+    // if (!this.referenceChatMessages) {
+    //   send a message to the user
+    // }
+
+    // this step is cleaning up the messages from the system...
+    // this.unsubscribe = this.referenceChatMessages.onSnapshot(
+    //   this.onCollectionUpdate
+    // );
+  }
+
+  onCollectionUpdate = (querySnapshot) => {
+    const messages = [];
+    // go through each document
+    querySnapshot.forEach((doc) => {
+      // get the QueryDocumentSnapshot's data
+      let data = doc.data();
+      messages.push({
+        _id: data._id,
+        text: data.text,
+        createdAt: data.createdAt.toDate(),
+        user: data.user,
+      });
+    });
+    this.setState({
+      messages,
+    });
+  };
+
+  componentWillUnmount() {
+    // this.unsubscribe();
+  }
+
+  addMessages() {
+    // add a new list to the collection
+    this.referenceChatMessages.add({
+      text: "Testtext",
+      createdAt: new Date(),
+
+      // uid: this.state.uid,
+    });
   }
 
   //function to append new messages to the messages states array.
