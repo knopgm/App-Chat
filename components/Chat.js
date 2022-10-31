@@ -16,8 +16,10 @@ export default class Screen2 extends React.Component {
     super(props);
     this.state = {
       messages: [],
+      uid: 0,
     };
 
+    //set up Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAVR56ZAQenGXN15aKEruNiSQ0nl-6FIlA",
       authDomain: "app-chat-a76de.firebaseapp.com",
@@ -31,78 +33,94 @@ export default class Screen2 extends React.Component {
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
+
+    this.referenceChatMessages = null;
   }
 
-  componentDidMount() {
-    let { name } = this.props.route.params;
-    this.props.navigation.setOptions({ title: name });
-
-    this.setState({
-      messages: [
-        //messages from others to the user
-        {
-          _id: 1,
-          text: "Hello developer",
-          createdAt: new Date(),
-          user: {
-            _id: 2,
-            name: "React Native",
-            avatar: "https://placeimg.com/140/140/any",
-          },
-        },
-        //messages from the system (who enters the room, etc.)
-        {
-          _id: 2,
-          text: "You entered the chat",
-          createdAt: new Date(),
-          system: true,
-        },
-      ],
-    });
-
-    // create a reference to your “messages” collection
-    this.referenceChatMessages = firebase.firestore().collection("messages");
-
-    // if (!this.referenceChatMessages) {
-    //   send a message to the user
-    // }
-
-    // this step is cleaning up the messages from the system...
-    // this.unsubscribe = this.referenceChatMessages.onSnapshot(
-    //   this.onCollectionUpdate
-    // );
-  }
-
+  // Retrieve collection data & store in messages
   onCollectionUpdate = (querySnapshot) => {
     const messages = [];
     // go through each document
+
     querySnapshot.forEach((doc) => {
       // get the QueryDocumentSnapshot's data
       let data = doc.data();
       messages.push({
         _id: data._id,
-        text: data.text,
+        text: data.text || "",
         createdAt: data.createdAt.toDate(),
-        user: data.user,
+        user: {
+          _id: data.user._id,
+          name: data.user.name,
+          avatar: data.user.avatar || "",
+        },
       });
     });
+
     this.setState({
       messages,
     });
   };
 
-  componentWillUnmount() {
-    // this.unsubscribe();
+  componentDidMount() {
+    let { name } = this.props.route.params;
+    this.props.navigation.setOptions({ title: name });
+
+    // this.setState({
+    //   messages: [
+    //     //messages from others to the user
+    //     {
+    //       _id: 1,
+    //       text: "Hello developer",
+    //       createdAt: new Date(),
+    //       user: {
+    //         _id: 2,
+    //         name: "React Native",
+    //         avatar: "https://placeimg.com/140/140/any",
+    //       },
+    //     },
+    //     //messages from the system (who enters the room, etc.)
+    //     {
+    //       _id: 2,
+    //       text: "You entered the chat",
+    //       createdAt: new Date(),
+    //       system: true,
+    //     },
+    //   ],
+    // });
+
+    // create a reference to your “messages” collection
+    this.referenceChatMessages = firebase.firestore().collection("messages");
+
+    this.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (!user) {
+        firebase.auth().signInAnonymously();
+      }
+      this.setState({
+        uid: user.uid,
+      });
+      console.log(">>>>>>", { user });
+
+      this.unsubscribe = this.referenceChatMessages
+        .orderBy("createdAt", "desc")
+        .onSnapshot(this.onCollectionUpdate);
+    });
   }
 
-  addMessages() {
-    // add a new list to the collection
-    this.referenceChatMessages.add({
-      text: "Testtext",
-      createdAt: new Date(),
+  componentWillUnmount() {
+    // this function is not a function (as the Render error warns)
+    this.unsubscribe();
+    // stoplistening to authentication
+    this.authUnsubscribe();
+  }
 
-      // uid: this.state.uid,
-    });
+  addMessage() {
+    // add a new list to the collection
+    // this.referenceChatMessages.add({
+    //   text: "Testtext",
+    //   createdAt: new Date(),
+    //   uid: this.state.uid,
+    // });
   }
 
   //function to append new messages to the messages states array.
@@ -110,39 +128,39 @@ export default class Screen2 extends React.Component {
     this.setState((previousState) => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }));
+
+    messages.forEach((message) => {
+      this.referenceChatMessages.add(message);
+    });
   }
 
   //function to style the bubble messages
   renderBubble(props) {
-    return (
-      <Bubble
-        {...props}
-        wrapperStyle={{
-          //bubbles at the right side of the screen (use left for left side)
-          right: {
-            backgroundColor: "#000",
-          },
-        }}
-      />
-    );
+    return <Bubble {...props} wrapperStyle={styles.bubble} />;
   }
 
   render() {
+    const { backgroundColor, name } = this.props.route.params;
+    console.log(this.state.messages);
     return (
       <View
-        style={{
-          backgroundColor: this.props.route.params.backgroundColor,
-          flex: 1,
-        }}
+        style={[
+          {
+            backgroundColor: backgroundColor,
+          },
+          styles.chatContainer,
+        ]}
       >
         <GiftedChat
           renderBubble={this.renderBubble.bind(this)}
           messages={this.state.messages}
           onSend={(messages) => this.onSend(messages)}
           user={{
-            _id: 1,
+            _id: this.state.uid,
+            name: name,
           }}
         />
+        {/*Prevent hidden input field on Android*/}
         {Platform.OS === "android" ? (
           <KeyboardAvoidingView behavior="height" />
         ) : null}
@@ -156,6 +174,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   chatText: {
-    color: "white",
+    color: "black",
+  },
+  bubble: {
+    left: {
+      backgroundColor: "gray",
+    },
+    right: {
+      backgroundColor: "#3A85A9",
+    },
   },
 });
