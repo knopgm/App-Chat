@@ -7,6 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const firebase = require("firebase");
 require("firebase/firestore");
@@ -62,9 +63,47 @@ export default class Screen2 extends React.Component {
     });
   };
 
+  //function to save messages in the asyncStorage of the cellphone
+  async saveMessages() {
+    try {
+      await AsyncStorage.setItem(
+        "messages",
+        JSON.stringify(this.state.messages)
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  async getMessages() {
+    let messages = "";
+    try {
+      messages = (await AsyncStorage.getItem("messages")) || [];
+      this.setState({
+        messages: JSON.parse(messages),
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  //function to delete test messages (dev tool)
+  async deleteMessages() {
+    try {
+      await AsyncStorage.removeItem("messages");
+      this.setState({
+        messages: [],
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
   componentDidMount() {
     let { name } = this.props.route.params;
     this.props.navigation.setOptions({ title: name });
+
+    this.getMessages();
 
     // this.setState({
     //   messages: [
@@ -125,9 +164,14 @@ export default class Screen2 extends React.Component {
 
   //function to append new messages to the messages states array.
   onSend(messages = []) {
-    this.setState((previousState) => ({
-      messages: GiftedChat.append(previousState.messages, messages),
-    }));
+    this.setState(
+      (previousState) => ({
+        messages: GiftedChat.append(previousState.messages, messages),
+      }),
+      () => {
+        this.saveMessages();
+      }
+    );
 
     messages.forEach((message) => {
       this.referenceChatMessages.add(message);
