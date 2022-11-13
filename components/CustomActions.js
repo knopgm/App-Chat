@@ -7,6 +7,9 @@ import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 
+import firebase from "firebase";
+import "firebase/firestore";
+
 // Using a Higher Order Component to wrap your component
 import { connectActionSheet } from "@expo/react-native-action-sheet";
 
@@ -79,32 +82,32 @@ class CustomActions extends Component {
   };
 
   // Upload images to firebase
-  //   uploadImageFetch = async (uri) => {
-  //     const blob = await new Promise((resolve, reject) => {
-  //       const xhr = new XMLHttpRequest();
-  //       xhr.onload = function () {
-  //         resolve(xhr.response);
-  //       };
-  //       xhr.onerror = function (e) {
-  //         console.log(e);
-  //         reject(new TypeError("Network request failed"));
-  //       };
-  //       xhr.responseType = "blob";
-  //       xhr.open("GET", uri, true);
-  //       xhr.send(null);
-  //     });
+  uploadImageFetch = async (uri) => {
+    const blob = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function (e) {
+        console.log(e);
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", uri, true);
+      xhr.send(null);
+    });
 
-  // const imageNameBefore = uri.split("/");
-  // const imageName = imageNameBefore[imageNameBefore.length - 1];
+    const imageNameBefore = uri.split("/");
+    const imageName = imageNameBefore[imageNameBefore.length - 1];
 
-  // const ref = firebase.storage().ref().child(`images/${imageName}`);
+    const ref = firebase.storage().ref().child(`images/${imageName}`);
 
-  // const snapshot = await ref.put(blob);
+    const snapshot = await ref.put(blob);
 
-  // blob.close();
+    blob.close();
 
-  // return await snapshot.ref.getDownloadURL();
-  //   };
+    return await snapshot.ref.getDownloadURL();
+  };
 
   //function that handles communication features
   onActionPress = () => {

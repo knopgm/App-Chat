@@ -18,9 +18,9 @@ export default class Screen2 extends Component {
       messages: [],
       uid: 0,
       isConnected: false,
-      // loggedInText: "Please wait, you are getting logged in",
-      // image: null,
-      // location: null,
+      loggedInText: "Please wait, you are getting logged in",
+      image: null,
+      location: null,
     };
 
     //set up Firebase
@@ -124,23 +124,29 @@ export default class Screen2 extends Component {
         this.referenceChatMessages = firebase
           .firestore()
           .collection("messages");
-        this.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
-          if (!user) {
-            firebase.auth().signInAnonymously();
-          }
-          this.setState(
-            {
-              uid: user.uid,
-            },
-            () => {
-              this.saveMessages();
-            }
-          );
 
-          this.unsubscribe = this.referenceChatMessages
-            .orderBy("createdAt", "desc")
-            .onSnapshot(this.onCollectionUpdate);
-        });
+        this.imgRef = this.authUnsubscribe = firebase
+          .auth()
+          .onAuthStateChanged((user) => {
+            if (!user) {
+              firebase.auth().signInAnonymously();
+            }
+            this.setState(
+              {
+                uid: user.uid,
+                messages: [],
+                loggedInText: "",
+              },
+              () => {
+                this.saveMessages();
+              }
+            );
+
+            //Listen for collection changes
+            this.unsubscribe = this.referenceChatMessages
+              .orderBy("createdAt", "desc")
+              .onSnapshot(this.onCollectionUpdate);
+          });
       } else {
         console.log("FFFFFFFFFFFF", "offline");
         this.setState({ isConnected: false });
@@ -253,7 +259,7 @@ export default class Screen2 extends Component {
 
   render() {
     const { backgroundColor, name } = this.props.route.params;
-
+    console.log({ logoPath: this.state.logoUrl });
     return (
       <View
         style={[
