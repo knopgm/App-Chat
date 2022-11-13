@@ -1,25 +1,26 @@
-import React from "react";
-import {
-  View,
-  Platform,
-  KeyboardAvoidingView,
-  FlatList,
-  StyleSheet,
-} from "react-native";
+import React, { Component } from "react";
+import { View, Platform, KeyboardAvoidingView, StyleSheet } from "react-native";
 import { Bubble, GiftedChat, InputToolbar } from "react-native-gifted-chat";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
+// import action button
+import CustomActions from "./CustomActions";
+
+import MapView from "react-native-maps";
 
 const firebase = require("firebase");
 require("firebase/firestore");
 
-export default class Screen2 extends React.Component {
+export default class Screen2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
       messages: [],
       uid: 0,
       isConnected: false,
+      // loggedInText: "Please wait, you are getting logged in",
+      // image: null,
+      // location: null,
     };
 
     //set up Firebase
@@ -57,6 +58,8 @@ export default class Screen2 extends React.Component {
           name: data.user.name,
           avatar: data.user.avatar || "",
         },
+        image: data.image || "",
+        location: data.location || "",
       });
     });
 
@@ -111,6 +114,7 @@ export default class Screen2 extends React.Component {
     let { name } = this.props.route.params;
     this.props.navigation.setOptions({ title: name });
 
+    //Check is user is online or offline
     NetInfo.fetch().then((connection) => {
       if (connection.isConnected) {
         console.log("HHHHHHHHHHHHHHHHH", "online");
@@ -223,6 +227,30 @@ export default class Screen2 extends React.Component {
     }
   }
 
+  //Create the + button
+  renderCustomActions(props) {
+    return <CustomActions {...props} />;
+  }
+
+  //render map location
+  renderCustomView(props) {
+    const { currentMessage } = props;
+    if (currentMessage.location) {
+      return (
+        <MapView
+          style={{ width: 150, height: 100, borderRadius: 13, margin: 3 }}
+          region={{
+            latitude: currentMessage.location.latitude,
+            longitude: currentMessage.location.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        />
+      );
+    }
+    return null;
+  }
+
   render() {
     const { backgroundColor, name } = this.props.route.params;
 
@@ -240,6 +268,8 @@ export default class Screen2 extends React.Component {
           messages={this.state.messages}
           // isConnected={this.state.isConnected}
           renderInputToolbar={this.renderInputToolbar.bind(this)}
+          renderActions={this.renderCustomActions.bind(this)}
+          renderCustomView={this.renderCustomView.bind(this)}
           onSend={(messages) => this.onSend(messages)}
           user={{
             _id: this.state.uid,
@@ -264,7 +294,7 @@ const styles = StyleSheet.create({
   },
   bubble: {
     left: {
-      backgroundColor: "gray",
+      backgroundColor: "white",
     },
     right: {
       backgroundColor: "#3A85A9",
