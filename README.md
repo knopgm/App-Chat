@@ -2,9 +2,7 @@
 
 A chat interface with option to share images, their location and chit-chat with friends online.
 
-<img src="assets/app-screenshot-2.jpeg" width="25%"/>
-
-<img src="assets/app-screenshot-1.jpeg" width="25%"/>
+<img src="assets/app-screenshot-2.jpeg" width="25%"/> <img src="assets/app-screenshot-1.jpeg" width="25%"/>
 
 ---
 
