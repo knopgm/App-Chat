@@ -1,6 +1,6 @@
 # App-Chat
 
-This App provide users with a chat interface and option to share images and their location.
+A chat interface with option to share images, their location and chit-chat with friends online.
 
 <img src="assets/app-screenshot-2.jpeg" width="25%"/>
 
@@ -8,7 +8,8 @@ This App provide users with a chat interface and option to share images and thei
 
 ---
 
-####:pushpin: How to run the project:
+## How to run the project:
+
 You can use any Emulator or Simulator to run the app on your device. To test this app, I have used Expo Go on iOS. To test the app with Expo, follow the below steps:
 
 1. Clone repository: `git clone https://github.com/knopgm/App-Chat.git`
@@ -23,32 +24,27 @@ You can use any Emulator or Simulator to run the app on your device. To test thi
 
 ---
 
-####:pushpin: Project Technical details
+## Dependencies
 
 - React Native
 - Expo
 - Google Firestore Database
 - Google Firebase Cloud Storage
 - Gifted Chat (UI library)
+- Android Studio - Emulator
 
----
+## Key Features:
 
-####:pushpin: Project main dependencies
+- Start Page: users can enter their name and choose a background color for the chat screen before joining the chat.
+- Chat Page: displays the conversation, as well as an input field and a button to send.
+- Storage: messages are stored for users on/offline
+- Media: Users can take photos, send from camera roll, and send location
 
-- "@react-navigation/native": "^6.0.13",
-- "@react-navigation/stack": "^6.3.1",
-- "expo": "~46.0.9",
-- "expo-status-bar": "~1.4.0",
-- "firebase": "^7.9.0",
-- "react": "18.0.0",
-- "react-native": "0.69.5",
-- "react-native-gesture-handler": "^2.6.2",
-- "react-native-gifted-chat": "^1.0.4",
-- "@react-native-async-storage/async-storage": "~1.17.3",
-- "@react-native-community/netinfo": "9.3.0",
-- "expo-permissions": "~13.2.0",
-- "expo-location": "~14.3.0",
-- "react-native-maps": "0.31.1",
-- "expo-image-picker": "~13.3.1"
+## User Stories:
 
----
+- As a new user, I want to be able to easily enter a chat room so I can quickly start talking to my friends and family.
+- As a user, I want to be able to send messages to my friends and family members to exchange the latest news.
+- As a user, I want to send images to my friends to show them what I’m currently doing.
+- As a user, I want to share my location with my friends to show them where I am.
+- As a user, I want to be able to read my messages offline so I can reread conversations at any time.
+- As a user with a visual impairment, I want to use a chat app that is compatible with a screen reader so that I can engage with a chat interface.
